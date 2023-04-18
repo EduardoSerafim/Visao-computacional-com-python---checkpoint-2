@@ -15,22 +15,6 @@ keyboard = Controller()
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-# templates = {
-#     "papel": cv2.imread("papel.png", 0),
-#     "tesoura": cv2.imread("tesoura.png", 0),
-#     "pedra": cv2.imread("pedra.png", 0)
-# }
-
-# def find_template(img_gray, template, threshold):
-#     res = cv2.matchTemplate(img_gray, template, cv2.TM_SQDIFF_NORMED)
-#     min_val, _, min_loc, _ = cv2.minMaxLoc(res)
-    
-#     if min_val < threshold:
-#         width, height = template.shape[::-1]
-#         bottom_right = (min_loc[0] + width, min_loc[1] + height)
-#         return min_loc, bottom_right
-    
-#     return None
 
 template_papel = cv2.imread("papel.png", 0)
 template_tesoura = cv2.imread("tesoura.png", 0)

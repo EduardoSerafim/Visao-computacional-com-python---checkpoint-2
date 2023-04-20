@@ -6,7 +6,6 @@ import math
 
 #importes para emular precionamento de teclas
 from pynput.keyboard import Key, Controller
-import pynput
 import time
 import random
 
@@ -34,10 +33,16 @@ papel_j2 = cv2.flip(template_papel, -1)
 tesoura_j2 = cv2.flip(template_tesoura, -1)
 pedra_j2 = cv2.flip(template_pedra, -1)
 
+jogada_anterior_j1 = ""
+jogada_anterior_j2 = ""
+resultado = ""
+
 #LÓGICA DA PARTIDA DE JOKENPO
 def jankenpo(jogada_j1, jogada_j2):
     global pontuação_j1
-    global pontuação_j2 
+    global pontuação_j2
+    
+   
     if jogada_j1 == "papel" and jogada_j2 == "pedra" or jogada_j1 == "tesoura" and jogada_j2 == "papel" or jogada_j1 == "pedra" and jogada_j2 == "tesoura": #VITÓRIA DO JOGADOR 1
         pontuação_j1 += 1
         return  "JOGADOR 1 VENCEU"
@@ -110,20 +115,36 @@ def jogada_jogador2(img_gray, img_rgb):
 
 
 def image_da_webcam(img):
+    global jogada_anterior_j1
+    global jogada_anterior_j2
+    global resultado
+    
     #RECEBENDO O FRAME
     resized = ajustarImagem(img)
     img_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     
+    jogada1 = jogada_jogador1(img_gray, img_rgb)
+    jogada2 = jogada_jogador2(img_gray, img_rgb)
+
+ 
+
+    if jogada_anterior_j1 != jogada1 or jogada_anterior_j2 != jogada2 :
+        jogada_anterior_j1 = jogada1
+        jogada_anterior_j2 = jogada2
+        resultado = jankenpo(jogada1, jogada2)
+       
 
     #CAPTURA O RESULTADO DA PARTIDA
-    resultado = jankenpo(jogada_jogador1(img_gray, img_rgb),jogada_jogador2(img_gray, img_rgb))
     cv2.putText(img_rgb, resultado, (100 , 100), font,1,(0,0,0),1,cv2.LINE_AA)
 
-    #EXIBE A PONTUAÇÃO     
     cv2.putText(img_rgb, f"JOGADOR 1: {pontuação_j1}"  , (img_rgb.shape[1] - img_rgb.shape[1] + 10, img_rgb.shape[0] - 20), font,1,(0,150,0),1,cv2.LINE_AA)
     cv2.putText(img_rgb, f"JOGADOR 2: {pontuação_j2}" , (img_rgb.shape[1] - 300, img_rgb.shape[0] - 20), font,1,(255,0,0),1,cv2.LINE_AA)
- 
+
+
+    #EXIBE A PONTUAÇÃO     
+    print(jogada_anterior_j1)
+    print(jogada_anterior_j2)
 
 
     return img_rgb
